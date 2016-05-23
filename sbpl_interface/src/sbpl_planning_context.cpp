@@ -203,6 +203,8 @@ bool SBPLPlanningContext::solve(planning_interface::MotionPlanResponse& res)
   last_planning_statistics_.total_time_ = ros::WallTime::now() - wt;
   last_planning_statistics_.print();
 
+  mres.trajectory.joint_trajectory.points.pop_back();
+
   // Convert  moveit_msgs::MotionPlan::Response to planning_interface::MotionPlanResponse
   robot_state::RobotState start_state(scene->getCurrentState());
   res.trajectory_.reset(new robot_trajectory::RobotTrajectory(robot_model_, req.group_name));
@@ -213,6 +215,7 @@ bool SBPLPlanningContext::solve(planning_interface::MotionPlanResponse& res)
   ROS_INFO_NAMED("sbpl", "SBPL found successful plan, with %d points, in %fs",
                          static_cast<int>(mres.trajectory.joint_trajectory.points.size()),
                          last_planning_statistics_.total_time_.toSec());
+
   return true;
 }
 
